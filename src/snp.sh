@@ -2,7 +2,7 @@
 
 if [ -z "$1" ]
 then
-      echo "Action not provided, known actions: update, key-gen, kill, start, state, restart, tail"
+      echo "Action not provided, known actions: update, key-gen, kill, start, state, restart, tail, tailf"
       echo ""
       echo "      update - kill process, update git source base and reinstall packages, start process again"
       echo ""
@@ -75,6 +75,15 @@ then
       echo "            snp tail"
       echo "            snp tail start:prod"
       echo "            snp tail start:prod server graphqlmonster"
+      echo ""
+      echo ""
+      echo "      tailf - tail created log with listen"
+      echo ""
+      echo "            snp tail [script] [project-name] [namespace]"
+      echo ""
+      echo "            snp tail"
+      echo "            snp tail start:prod"
+      echo "            snp tail start:prod server graphqlmonster"
       exit 1
 fi
 
@@ -107,8 +116,6 @@ then
       # like show state for all run projects in namespace 
       # or even like stop evertihing in namespace or namespace and project and don't care about script
       NAMESPACE_STATE=$NAMESPACE
-      PROJECT_STATE=$PROJECT
-      SCRIPT_STATE=$SCRIPT
 fi
 
 
@@ -126,29 +133,43 @@ case $1 in
         update)
         echo "UPDATE namespace:$NAMESPACE, project:$PROJECT, script:$SCRIPT"
         sh $SNP_SCRIPT_DIR/update.sh $SNP_SCRIPT_DIR $SCRIPT $PROJECT $NAMESPACE
+        exit 0
         ;;
         key-gen)
         sh $SNP_SCRIPT_DIR/key-gen.sh $NAMESPACE_STATE $PROJECT_STATE $SCRIPT_STATE
+        exit 0
         ;;
         start)
         echo "START namespace:$NAMESPACE, project:$PROJECT, script:$SCRIPT"
-        sh $SNP_SCRIPT_DIR/start.sh $SNP_SCRIPT_DIR $SCRIPT $PROJECT $NAMESPACE 
+        sh $SNP_SCRIPT_DIR/start.sh $SNP_SCRIPT_DIR $SCRIPT $PROJECT $NAMESPACE
+        exit 0
         ;;
         state)
         echo "STATE namespace:$NAMESPACE_STATE, project:[$PROJECT_STATE], script:[$SCRIPT_STATE]"
         sh $SNP_SCRIPT_DIR/state.sh $SNP_SCRIPT_DIR $NAMESPACE_STATE $PROJECT_STATE $SCRIPT_STATE
+        exit 0
         ;;
         stop)
         echo "STOP namespace:$NAMESPACE_STATE, project:[$PROJECT_STATE], script:[$SCRIPT_STATE]"
         sh $SNP_SCRIPT_DIR/stop.sh $SNP_SCRIPT_DIR $NAMESPACE_STATE $PROJECT_STATE $SCRIPT_STATE
+        exit 0
         ;;
         restart)
         echo "RESTART namespace:$NAMESPACE, project:$PROJECT, script:$SCRIPT"
         sh $SNP_SCRIPT_DIR/stop.sh $SNP_SCRIPT_DIR $NAMESPACE $PROJECT $SCRIPT
         sh $SNP_SCRIPT_DIR/start.sh $SNP_SCRIPT_DIR $SCRIPT $PROJECT $NAMESPACE
+        exit 0
         ;;
         tail)
         echo "TAIL namespace:$NAMESPACE, project:$PROJECT, script:$SCRIPT"
         sh $SNP_SCRIPT_DIR/tail.sh $SNP_SCRIPT_DIR $SCRIPT $PROJECT $NAMESPACE
+        exit 0
+        ;;
+        tailf)
+        echo "TAILF namespace:$NAMESPACE, project:$PROJECT, script:$SCRIPT"
+        sh $SNP_SCRIPT_DIR/tail.sh $SNP_SCRIPT_DIR $SCRIPT $PROJECT $NAMESPACE -f
+        exit 0
         ;;
 esac
+
+echo "Unknown action: '$1' known actions: update, key-gen, kill, start, state, restart, tail, tailf"

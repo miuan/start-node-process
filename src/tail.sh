@@ -19,5 +19,11 @@ LOGBASE=$(echo "/var/log/$NAMESPACE/$PROJECT-$SCRIPT" | sed "s/:/$PS/")
 LOGFILE="$LOGBASE.log"
 LOGERROR="$LOGBASE.error.log"
 
-echo "tail -f $LOGFILE -n 1000"
-tail -f $LOGFILE -n 1000
+if [ "$5" = "-f" ]
+then
+    echo "tail -f $LOGFILE -n 1000"
+    tail -f $LOGFILE -n 1000
+else 
+    echo "tail $LOGFILE -n 1000"
+    tail $LOGFILE -n 1000
+fi
