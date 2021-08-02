@@ -10,4 +10,16 @@ NAMESPACE=$1
 PROJECT=$2
 SCRIPT=$3
 
-echo "start-node-process-on-$NAMESPACE-for-$PROJECT-with-npm-run-$SCRIPT"
+KEY="start-node-process-on-$NAMESPACE"
+
+if [ ! -z "$PROJECT" ]
+then
+      KEY="$KEY-for-$PROJECT"
+fi
+
+if [ ! -z "$SCRIPT" ]
+then
+      KEY="$KEY-with-npm-run-$SCRIPT"
+fi
+
+echo $KEY
